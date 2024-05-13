@@ -7,9 +7,10 @@
           <p>Get weather updates every hour</p>
           <br />
           <br />
-          <form class="subscribe_form">
+          <form [formGroup]="placeForm" class="subscribe_form">
             <div class="input-group">
               <input
+                formControlName="city"
                 type="text"
                 class="form-control"
                 id="place"
