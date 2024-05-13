@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ApiService } from './api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class AppComponent {
   placeForm: FormGroup;
+  subscription: Subscription[] = [];
 
   location: any = null;
   weather: any = {};
@@ -22,9 +23,39 @@ export class AppComponent {
 
     let hour = 3600000;
     let ftnMinutes = 900000;
-    interval(ftnMinutes).subscribe((x) => {
-      this.apiService.sendNotification();
-    });
+    this.subscription.push(
+      interval(5000).subscribe((x) => {
+        if (x) {
+          this.sendNotification();
+        }
+      })
+    );
+  }
+  sendNotification() {
+    let place = localStorage.getItem('place');
+    let subs = localStorage.getItem('subscribed');
+    if (place !== null && place !== '' && subs === 'true') {
+      this.apiService.get(place).subscribe((data: any) => {
+        let weather = data.current.condition;
+        let location = data.location.name + ', ' + data.location.region;
+        if (Notification.permission === 'granted') {
+          const notification = new Notification('Weather Notification', {
+            body: weather.text + ' in ' + location,
+            icon: weather.icon,
+            badge: weather.icon,
+          });
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission().then((permission) => {
+            console.log(permission);
+            const notification = new Notification('Weather Notification', {
+              body: weather.text + ' in ' + location,
+              icon: weather.icon,
+              badge: weather.icon,
+            });
+          });
+        }
+      });
+    }
   }
 
   subscribeForNotification() {
@@ -55,6 +86,8 @@ export class AppComponent {
   }
 
   unsubscribeForNotification() {
+    console.info('unsubscribed');
+    this.subscription.forEach((s) => s.unsubscribe());
     localStorage.clear();
     Swal.fire({
       position: 'top-end',
