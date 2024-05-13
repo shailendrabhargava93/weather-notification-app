@@ -36,32 +36,27 @@
         <br />
         <br />
         <div class="card" *ngIf="this.location != null">
-          <div class="image-box">
-            <img src="{{ this.weather.icon }}" />
-          </div>
           <div class="card-content">
-            <span class="tag">{{ this.weather.text }}</span>
-            <h2 class="card-title">{{ this.location }}</h2>
-            <small class="sub-title"></small>
-            <div class="rating">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
+            <div style="float: left">
+              <span class="tag">{{ this.weather.text }}</span>
+              <h2 class="card-title">{{ this.location }}</h2>
+              <small class="sub-title"></small>
+            </div>
+            <div style="float: right; height: 70px;" class="image-box">
+              <img src="{{ this.weather.icon }}" />
             </div>
           </div>
           <div class="actions">
             <span class="input-group-btn-2">
               <button
-                class="btn btn-primary"
+                class="btn btn-primary btn-sm"
                 type="button"
                 (click)="subscribeForNotification()"
               >
                 Subscribe to Notification</button
               >&nbsp;&nbsp;
               <button
-                class="btn btn-primary"
+                class="btn btn-primary btn-sm"
                 type="button"
                 (click)="unsubscribeForNotification()"
               >
