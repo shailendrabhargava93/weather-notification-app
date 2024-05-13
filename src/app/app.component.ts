@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { interval } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ApiService } from './api.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'my-app',
@@ -9,9 +10,16 @@ import { ApiService } from './api.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  placeForm: FormGroup;
+
   location: any = null;
   weather: any = {};
-  constructor(private apiService: ApiService) {
+
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
+    this.placeForm = this.fb.group({
+      city: [null, Validators.required],
+    });
+
     let hour = 3600000;
     let ftnMinutes = 900000;
     interval(ftnMinutes).subscribe((x) => {
@@ -20,11 +28,11 @@ export class AppComponent {
   }
 
   subscribeForNotification() {
-    let place = document.getElementById('place')['value'];
+    let place = this.placeForm.get('city')?.value;
     if (place != null && place != '') {
       localStorage.setItem('place', place);
       localStorage.setItem('subscribed', 'true');
-      document.getElementById('place')['value'] = '';
+      this.placeForm.get('city')?.setValue(null);
       Swal.fire({
         position: 'top-end',
         icon: 'success',
@@ -60,7 +68,7 @@ export class AppComponent {
   }
 
   getWeather() {
-    let place = document.getElementById('place')['value'];
+    let place = this.placeForm.get('city')?.value;
     if (place !== null && place !== '') {
       this.apiService.get(place).subscribe((data: any) => {
         console.log(data.current.condition);
