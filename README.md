@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.4.
 
+## Screenshots
+![image](https://github.com/shailendrabhargava93/weather-notification-app/assets/27663889/dae43d66-732c-4eeb-a751-efe95ba9727d)
+
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
