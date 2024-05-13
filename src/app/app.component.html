@@ -1,0 +1,72 @@
+<div id="subscription_area">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="subscribe_now">
+          <h4>Weather Notifications</h4>
+          <p>Get weather updates every hour</p>
+          <br />
+          <br />
+          <form class="subscribe_form">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="place"
+                placeholder="Enter city name"
+              />
+              <span class="input-group-btn">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  (click)="getWeather()"
+                >
+                  Get Weather
+                </button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <br />
+        <br />
+        <br />
+        <span class="input-group-btn-2">
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="subscribeForNotification()"
+          >
+            Subscribe to Notification</button
+          >&nbsp;&nbsp;
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="unsubscribeForNotification()"
+          >
+            Unsubscribe
+          </button>
+        </span>
+        <!--card-->
+        <br />
+        <br />
+        <div class="card" *ngIf="this.location != null">
+          <div class="image-box">
+            <img src="{{ this.weather.icon }}" />
+          </div>
+          <div class="card-content">
+            <span class="tag">{{ this.weather.text }}</span>
+            <h2 class="card-title">{{ this.location }}</h2>
+            <small class="sub-title"></small>
+            <div class="rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

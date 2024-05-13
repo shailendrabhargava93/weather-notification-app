@@ -1,0 +1,199 @@
+p {
+  font-family: Lato;
+}
+
+.subscribe_now h4 {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #34495e;
+  font-weight: 800;
+  text-align: center;
+}
+.subscribe_now p {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 2px;
+  color: #34495e;
+  text-align: center;
+}
+
+.subscribe_form {
+  max-width: 470px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0px 2px 5px 0px rgba(10, 6, 20, 0.24);
+}
+.subscribe_form:focus {
+  outline: none;
+}
+.subscribe_form .form-control {
+  border: none;
+}
+.form-control:focus {
+  box-shadow: none;
+}
+input {
+  height: 44px;
+  width: 25em;
+  padding-left: 2em !important;
+}
+button {
+  border: none;
+  height: 44px;
+  background-color: #1976d2;
+  color: #fff;
+  margin: -1px;
+  border-radius: 0;
+  width: auto;
+  text-transform: uppercase;
+  position: relative;
+  transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -ms-transition: all ease 0.3s;
+}
+.subscribe_form button:hover,
+.subscribe_form button:focus,
+.subscribe_form button:active,
+.subscribe_form button:visited {
+  color: #fff;
+  background-color: #1976d2;
+  outline: none;
+  transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -ms-transition: all ease 0.3s;
+}
+.subscribe_form button:hover:before,
+.subscribe_form button:focus:before,
+.subscribe_form button:active:before,
+.subscribe_form button:visited:before {
+  background-color: #1976d2;
+  transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -ms-transition: all ease 0.3s;
+}
+.subscribe_form button:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  height: 1px;
+  background-color: #1976d2;
+  width: 100%;
+  transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -ms-transition: all ease 0.3s;
+}
+.subscribe_form .input-group-btn:last-child > .btn,
+.subscribe_form .input-group-btn:last-child > .btn-group {
+  z-index: 2;
+  margin-left: 0px;
+}
+.input-group {
+  width: 50em;
+}
+
+.input-group-btn-2 {
+  width: 100%;
+  text-align: center;
+  float: right;
+  align-items: center;
+}
+
+/*card css*/
+.card {
+  background: #fff;
+  width: 22rem;
+  border-radius: 10px;
+  border: 1px solid #70bee6;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  margin-left: 28.5em;
+  margin-top: 1em;
+}
+.card:hover {
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1), 0px 6px 12px rgba(0, 0, 0, 0.1),
+    1px 3px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(5px);
+}
+.card .image-box {
+  height: 15vh;
+  border: none;
+  background: #70bee6;
+}
+.card .image-box img {
+  float: inline-end;
+  height: 100%;
+}
+.card .card-content {
+  padding: 1.3rem;
+}
+.card .tag {
+  border: 1px solid #70bee6;
+  padding: 0.3rem 1rem;
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  border-radius: 5px;
+}
+.card .card-title {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+.card .sub-title {
+  color: gray;
+}
+.card .rating {
+  margin-top: 0.5rem;
+}
+.card .rating .fas {
+  color: gold;
+}
+.card .price-box {
+  display: flex;
+  margin-top: 0.6rem;
+  gap: 1rem;
+}
+.card .price-box p {
+  color: black;
+  font-weight: bold;
+}
+.card .price-box p::before {
+  content: '$';
+  margin-right: 2px;
+  color: gray;
+}
+.card .price-box .old-price {
+  text-decoration: line-through;
+  font-weight: normal;
+  color: gray;
+}
+.card .btn {
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  width: 100%;
+  border-radius: 5px;
+  text-transform: capitalize;
+  background: none;
+  border: 2px solid #70bee6;
+  transition: 0.3s ease;
+}
+.card .btn:hover {
+  cursor: pointer;
+  background: #70bee6;
+  color: #fff;
+}
+.error {
+  font-size: 12px;
+  color: red;
+  text-align: center;
+  margin-left: 5em;
+}
