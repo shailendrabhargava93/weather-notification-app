@@ -19,7 +19,7 @@ export class ApiService {
     let place = localStorage.getItem('place');
     let subs = localStorage.getItem('subscribed');
     if (place && subs == 'true') {
-      return this.httpClient
+       this.httpClient
         .get(this.SERVER_URL + '&q=' + place + '&aqi=yes')
         .subscribe((data: any) => {
           let weather = data.current.condition;
