@@ -1,0 +1,140 @@
+<div
+  class="flex flex-col items-center justify-center min-h-screen bg-[#2A629A] p-4 dark:bg-[#1E3A5F]"
+>
+  <div
+    class="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-6 mb-8 w-full max-w-sm"
+  >
+    <h2
+      class="text-xl font-semibold text-[#2A629A] dark:text-[#2A629A] mb-4 text-center"
+    >
+      Weather Wise
+    </h2>
+    <form [formGroup]="placeForm">
+      <div class="w-full flex justify-center items-center">
+        <input
+          type="text"
+          placeholder="Enter city name"
+          formControlName="city"
+          class="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2A629A] dark:bg-zinc-700 dark:text-white dark:placeholder-zinc-400"
+        />
+        <button
+          class="bg-[#2A629A] rounded-lg text-white text-center self-center p-2 mb-4 px-3 py-2 mx-2"
+          (click)="getWeather()"
+        >
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="text-center text-zinc-500 dark:text-zinc-400 mb-4">or</div>
+      <button
+        class="w-full bg-[#2A629A] text-white py-2 rounded-md hover:bg-[#1E3A5F]"
+        (click)="getLocation()"
+      >
+        Get Device Location <i class="fa fa-map-marker" aria-hidden="true"></i>
+      </button>
+    </form>
+  </div>
+  <div
+    *ngIf="this.location != null"
+    class="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-6 w-full max-w-sm"
+  >
+    <div class="flex justify-center mb-4">
+      <button
+        id="current-tab"
+        class="text-xl font-semibold text-[#2A629A] dark:text-[#2A629A] mr-4"
+        (click)="onTab('current-tab')"
+      >
+        Current
+      </button>
+      <button
+        id="forecast-tab"
+        class="text-xl font-semibold text-zinc-500 dark:text-zinc-400"
+        (click)="onTab('forecast-tab')"
+      >
+        Forecast
+      </button>
+    </div>
+    <div id="current-content" class="flex flex-col items-center mb-4">
+      <img
+        src="{{ this.weather.condition.icon }}"
+        alt="weather icon"
+        class="mb-2"
+        crossorigin="anonymous"
+      />
+      <div *ngIf="isCelsius" id="temperature" class="text-5xl font-bold">
+        {{ this.weather.temp_c }} °C
+      </div>
+      <div *ngIf="!isCelsius" id="temperature" class="text-5xl font-bold">
+        {{ this.weather.temp_f }} °F
+      </div>
+      <div class="text-zinc-500 dark:text-zinc-400">
+        {{ this.weather.condition.text }}
+      </div>
+      <div class="text-zinc-500 dark:text-zinc-400 flex items-center mt-2">
+        {{ this.location }}
+      </div>
+
+      <span class="mt-2 mb-2"></span>
+
+      <div class="flex justify-around w-full mb-4">
+        <div class="text-center">
+          <img
+            aria-hidden="true"
+            alt="temperature"
+            src="/assets/windy.png"
+            class="w-10 h-10 text-[#2A629A] dark:text-[#2A629A] mx-auto mb-1"
+          />
+          <div class="text-sm">{{ this.weather.feelslike_c }}°C</div>
+          <div class="text-xs text-zinc-500 dark:text-zinc-400">Feels like</div>
+        </div>
+        <div class="text-center">
+          <img
+            aria-hidden="true"
+            alt="humidity"
+            src="/assets/humidity.png"
+            class="w-10 h-10 text-[#2A629A] dark:text-[#2A629A] mx-auto mb-1"
+          />
+          <div class="text-sm">{{ this.weather.humidity }}%</div>
+          <div class="text-xs text-zinc-500 dark:text-zinc-400">Humidity</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="forecast-content" class="hidden flex-col items-center mb-4">
+      <div class="text-zinc-500 dark:text-zinc-400 mb-4">
+        Upcoming Forecast (3-days)
+      </div>
+      <div class="w-full grid grid-cols-2 gap-2">
+        <div
+          class="bg-[#3B7BBF] dark:bg-zinc-600 p-4 rounded-lg text-center"
+          *ngFor="let cast of forecastDays"
+        >
+          <div class="text-sm mb-2">{{ cast.date | date : "mediumDate" }}</div>
+          <img
+            src="{{ cast.day.condition.icon }}"
+            alt="day 1 weather icon"
+            class="mx-auto mb-2"
+            crossorigin="anonymous"
+          />
+          <div *ngIf="isCelsius" class="text-lg font-bold">
+            {{ cast.day.maxtemp_c }}°C - {{ cast.day.mintemp_c }}°C
+          </div>
+
+          <div *ngIf="!isCelsius" class="text-lg font-bold">
+            {{ cast.day.maxtemp_f }}°F - {{ cast.day.mintemp_f }}°F
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-center">
+      <button
+        id="toggle-unit"
+        class="bg-[#2A629A] text-white py-2 px-4 rounded-md hover:bg-[#1E3A5F]"
+        (click)="onUnitChange()"
+      >
+        <span *ngIf="isCelsius">Switch to °F</span>
+        <span *ngIf="!isCelsius">Switch to °C</span>
+      </button>
+    </div>
+  </div>
+</div>

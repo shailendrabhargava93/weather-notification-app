@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
 import { ApiService } from './api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
   selector: 'my-app',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  // templateUrl: './app.component.html',
+  templateUrl: './weather-app.component.html',
+  // styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   placeForm: FormGroup;
@@ -15,8 +16,15 @@ export class AppComponent {
 
   location: any = null;
   weather: any = {};
+  forecastDays: any[] = [];
+  isCelsius = false;
+  isFahrenheit = false;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private toast: HotToastService
+  ) {
     this.placeForm = this.fb.group({
       city: [null, Validators.required],
     });
@@ -35,7 +43,7 @@ export class AppComponent {
     let place = localStorage.getItem('place');
     let subs = localStorage.getItem('subscribed');
     if (place !== null && place !== '' && subs === 'true') {
-      this.apiService.get(place).subscribe((data: any) => {
+      this.apiService.getCurrent(place).subscribe((data: any) => {
         let weather = data.current.condition;
         let location = data.location.name + ', ' + data.location.region;
         if (Notification.permission === 'granted') {
@@ -64,59 +72,96 @@ export class AppComponent {
       localStorage.setItem('place', place);
       localStorage.setItem('subscribed', 'true');
       this.placeForm.get('city')?.setValue(null);
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Subscribed Successfully',
-        showConfirmButton: false,
-        width: '20rem',
-        padding: '1rem',
-        timer: 1500,
-      });
-    } else
-      Swal.fire({
-        position: 'top-end',
-        icon: 'info',
-        title: 'Enter city name',
-        showConfirmButton: false,
-        width: '20rem',
-        padding: '1rem',
-        timer: 1500,
-      });
+      this.toast.success('Subscribed Successfully 👍');
+    } else this.toast.warning('You are not subscribed.');
   }
 
   unsubscribeForNotification() {
     console.info('unsubscribed');
     this.subscription.forEach((s) => s.unsubscribe());
     localStorage.clear();
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Unsubscribed Successfully',
-      showConfirmButton: false,
-      width: '20rem',
-      padding: '1rem',
-      timer: 1500,
-    });
+    this.toast.success('Unsubscribed Successfully 👍');
   }
 
   getWeather() {
     let place = this.placeForm.get('city')?.value;
     if (place !== null && place !== '') {
-      this.apiService.get(place).subscribe((data: any) => {
-        console.log(data.current.condition);
-        this.weather = data.current.condition;
-        this.location = data.location.name + ', ' + data.location.region;
-      });
-    } else
-      Swal.fire({
-        position: 'top-end',
-        icon: 'info',
-        title: 'Enter city name',
-        showConfirmButton: false,
-        width: '20rem',
-        padding: '1rem',
-        timer: 1500,
-      });
+      this.apiService
+        .getCurrent(place)
+        .pipe(
+          this.toast.observe({
+            loading: 'Fetching weather updates ⌛',
+            success: 'Done ✅',
+            error: 'Something failed',
+          })
+        )
+        .subscribe((data: any) => {
+          this.isCelsius = true;
+          this.weather = data.current;
+          this.location =
+            data.location.name +
+            ', ' +
+            data.location.region +
+            ', ' +
+            data.location.country;
+        });
+    } else this.toast.warning('Enter city name 🏙️');
+  }
+
+  getForecast() {
+    let place = this.placeForm.get('city')?.value;
+    if (place !== null && place !== '') {
+      this.apiService
+        .getForecast(place)
+        .pipe(
+          this.toast.observe({
+            loading: 'Fetching forecast updates ⌛',
+            success: 'Done ✅',
+            error: 'Something failed',
+          })
+        )
+        .subscribe((data: any) => {
+          this.location = data.location.name;
+          this.forecastDays = data.forecast.forecastday;
+          console.log(this.forecastDays);
+        });
+    } else this.toast.warning('Enter city name 🏙️');
+  }
+
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+          if (position) {
+            // Get the user's latitude and longitude coordinates
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const combined = lat + ',' + lng;
+            console.log(`Coords : ${combined}`);
+            this.placeForm.get('city')?.setValue(combined);
+            this.getWeather();
+          }
+        },
+        (error: GeolocationPositionError) => console.log(error)
+      );
+    } else {
+      this.placeForm.get('city')?.setValue(null);
+      this.toast.error('Geolocation is not supported by this browser.');
+    }
+  }
+
+  onTab(tab: string) {
+    if (tab === 'current-tab') {
+      document.getElementById('current-content')?.classList.remove('hidden');
+      document.getElementById('forecast-content')?.classList.add('hidden');
+    } else {
+      document.getElementById('current-content')?.classList.add('hidden');
+      document.getElementById('forecast-content')?.classList.remove('hidden');
+      this.getForecast();
+    }
+  }
+
+  onUnitChange() {
+    this.isCelsius = !this.isCelsius;
   }
 }
