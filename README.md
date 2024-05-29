@@ -5,6 +5,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 App sends notifications to your system every one hour based on the city you provided. 
 
 ## Demo
+### Initial Design
 [Demo](https://weather-notification-app.vercel.app/)
 
 ## Screenshots
