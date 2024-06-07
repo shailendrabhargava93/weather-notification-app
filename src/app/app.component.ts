@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
-import { ApiService } from './api.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HotToastService } from '@ngneat/hot-toast';
+import { Component } from "@angular/core";
+import { catchError, interval, of, Subscription } from "rxjs";
+import { ApiService } from "./api.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { HotToastService } from "@ngneat/hot-toast";
 
 @Component({
-  selector: 'my-app',
+  selector: "my-app",
   // templateUrl: './app.component.html',
-  templateUrl: './weather-app.component.html',
-  // styleUrls: ['./app.component.css'],
+  templateUrl: "./weather-app.component.html",
+  styleUrls: ["./weather-app.component.css"],
 })
 export class AppComponent {
   placeForm: FormGroup;
@@ -19,6 +19,7 @@ export class AppComponent {
   forecastDays: any[] = [];
   isCelsius = false;
   isFahrenheit = false;
+  isCurrentTab = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,24 +40,25 @@ export class AppComponent {
       })
     );
   }
+
   sendNotification() {
-    let place = localStorage.getItem('place');
-    let subs = localStorage.getItem('subscribed');
-    if (place !== null && place !== '' && subs === 'true') {
+    let place = localStorage.getItem("place");
+    let subs = localStorage.getItem("subscribed");
+    if (place !== null && place !== "" && subs === "true") {
       this.apiService.getCurrent(place).subscribe((data: any) => {
         let weather = data.current.condition;
-        let location = data.location.name + ', ' + data.location.region;
-        if (Notification.permission === 'granted') {
-          const notification = new Notification('Weather Notification', {
-            body: weather.text + ' in ' + location,
+        let location = data.location.name + ", " + data.location.region;
+        if (Notification.permission === "granted") {
+          const notification = new Notification("Weather Notification", {
+            body: weather.text + " in " + location,
             icon: weather.icon,
             badge: weather.icon,
           });
-        } else if (Notification.permission !== 'denied') {
+        } else if (Notification.permission !== "denied") {
           Notification.requestPermission().then((permission) => {
             console.log(permission);
-            const notification = new Notification('Weather Notification', {
-              body: weather.text + ' in ' + location,
+            const notification = new Notification("Weather Notification", {
+              body: weather.text + " in " + location,
               icon: weather.icon,
               badge: weather.icon,
             });
@@ -67,65 +69,65 @@ export class AppComponent {
   }
 
   subscribeForNotification() {
-    let place = this.placeForm.get('city')?.value;
-    if (place != null && place != '') {
-      localStorage.setItem('place', place);
-      localStorage.setItem('subscribed', 'true');
-      this.placeForm.get('city')?.setValue(null);
-      this.toast.success('Subscribed Successfully 👍');
-    } else this.toast.warning('You are not subscribed.');
+    let place = this.placeForm.get("city")?.value;
+    if (place != null && place != "") {
+      localStorage.setItem("place", place);
+      localStorage.setItem("subscribed", "true");
+      this.placeForm.get("city")?.setValue(null);
+      this.toast.success("Subscribed Successfully 👍");
+    } else this.toast.warning("You are not subscribed.");
   }
 
   unsubscribeForNotification() {
-    console.info('unsubscribed');
+    console.info("unsubscribed");
     this.subscription.forEach((s) => s.unsubscribe());
     localStorage.clear();
-    this.toast.success('Unsubscribed Successfully 👍');
+    this.toast.success("Unsubscribed Successfully 👍");
   }
 
   getWeather() {
-    let place = this.placeForm.get('city')?.value;
-    if (place !== null && place !== '') {
+    let place = this.placeForm.get("city")?.value;
+    if (place !== null && place !== "") {
       this.apiService
         .getCurrent(place)
         .pipe(
           this.toast.observe({
-            loading: 'Fetching weather updates ⌛',
-            success: 'Done ✅',
-            error: 'Something failed',
+            loading: "Fetching weather updates ⌛",
+            success: "Done!",
+            error: (e)=> e.error.error.message
           })
         )
         .subscribe((data: any) => {
+          this.onTab("current-tab");
           this.isCelsius = true;
           this.weather = data.current;
           this.location =
             data.location.name +
-            ', ' +
+            ", " +
             data.location.region +
-            ', ' +
+            ", " +
             data.location.country;
         });
-    } else this.toast.warning('Enter city name 🏙️');
+    } else this.toast.warning("Enter city name 🏙️");
   }
 
   getForecast() {
-    let place = this.placeForm.get('city')?.value;
-    if (place !== null && place !== '') {
+    let place = this.placeForm.get("city")?.value;
+    if (place !== null && place !== "") {
       this.apiService
         .getForecast(place)
         .pipe(
           this.toast.observe({
-            loading: 'Fetching forecast updates ⌛',
-            success: 'Done ✅',
-            error: 'Something failed',
+            loading: "Fetching forecast updates ⌛",
+            success: "Done!",
+            error: "Something failed",
           })
         )
         .subscribe((data: any) => {
           this.location = data.location.name;
           this.forecastDays = data.forecast.forecastday;
-          console.log(this.forecastDays);
         });
-    } else this.toast.warning('Enter city name 🏙️');
+    } else this.toast.warning("Enter city name 🏙️");
   }
 
   getLocation() {
@@ -133,30 +135,27 @@ export class AppComponent {
       navigator.geolocation.getCurrentPosition(
         (position: GeolocationPosition) => {
           if (position) {
-            // Get the user's latitude and longitude coordinates
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const combined = lat + ',' + lng;
+            const combined = lat + "," + lng;
             console.log(`Coords : ${combined}`);
-            this.placeForm.get('city')?.setValue(combined);
+            this.placeForm.get("city")?.setValue(combined);
             this.getWeather();
           }
         },
         (error: GeolocationPositionError) => console.log(error)
       );
     } else {
-      this.placeForm.get('city')?.setValue(null);
-      this.toast.error('Geolocation is not supported by this browser.');
+      this.placeForm.get("city")?.setValue(null);
+      this.toast.error("Geolocation is not supported by this browser.");
     }
   }
 
   onTab(tab: string) {
-    if (tab === 'current-tab') {
-      document.getElementById('current-content')?.classList.remove('hidden');
-      document.getElementById('forecast-content')?.classList.add('hidden');
+    if (tab === "current-tab") {
+      this.isCurrentTab = true;
     } else {
-      document.getElementById('current-content')?.classList.add('hidden');
-      document.getElementById('forecast-content')?.classList.remove('hidden');
+      this.isCurrentTab = false;
       this.getForecast();
     }
   }
