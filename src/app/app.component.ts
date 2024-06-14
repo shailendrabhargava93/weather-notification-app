@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { catchError, interval, of, Subscription } from "rxjs";
+import { interval, Subscription } from "rxjs";
 import { ApiService } from "./api.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HotToastService } from "@ngneat/hot-toast";
@@ -74,8 +74,8 @@ export class AppComponent {
       localStorage.setItem("place", place);
       localStorage.setItem("subscribed", "true");
       this.placeForm.get("city")?.setValue(null);
-      this.toast.success("Subscribed Successfully 👍");
-    } else this.toast.warning("You are not subscribed.");
+      this.toast.success("You have subscribed to weather updates 👍");
+    } else this.toast.warning("You have not subscribe to weather updates");
   }
 
   unsubscribeForNotification() {
@@ -94,7 +94,7 @@ export class AppComponent {
           this.toast.observe({
             loading: "Fetching weather updates ⌛",
             success: "Done!",
-            error: (e)=> e.error.error.message
+            error: (e) => e.error.error.message,
           })
         )
         .subscribe((data: any) => {
@@ -120,7 +120,7 @@ export class AppComponent {
           this.toast.observe({
             loading: "Fetching forecast updates ⌛",
             success: "Done!",
-            error: "Something failed",
+            error: (e) => e.error.error.message,
           })
         )
         .subscribe((data: any) => {
@@ -138,7 +138,6 @@ export class AppComponent {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             const combined = lat + "," + lng;
-            console.log(`Coords : ${combined}`);
             this.placeForm.get("city")?.setValue(combined);
             this.getWeather();
           }
@@ -147,7 +146,7 @@ export class AppComponent {
       );
     } else {
       this.placeForm.get("city")?.setValue(null);
-      this.toast.error("Geolocation is not supported by this browser.");
+      this.toast.error("Geolocation is not supported by your current browser.");
     }
   }
 
