@@ -9,6 +9,11 @@ App sends notifications to your system every one hour based on the city you prov
 [Demo](https://weather-notification-app.vercel.app/)
 
 ## Screenshots
+  #### NEW DESIGN
+  ![image](https://github.com/shailendrabhargava93/weather-sphere/assets/27663889/b02ec152-25b3-4673-9b7e-a47d5d7037f9)
+  ![image](https://github.com/shailendrabhargava93/weather-sphere/assets/27663889/62bf1cf9-6ee0-4712-9052-52d7750b4aed)
+  ![image](https://github.com/shailendrabhargava93/weather-sphere/assets/27663889/3d27103a-940b-4767-b543-29a868a163de)
+
   #### Initial Design
   ![image](https://github.com/shailendrabhargava93/weather-notification-app/assets/27663889/dae43d66-732c-4eeb-a751-efe95ba9727d)
 
