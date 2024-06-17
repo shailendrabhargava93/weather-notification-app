@@ -1,6 +1,6 @@
 {
-  "name": "Weather Sphere",
-  "short_name": "Weather Sphere",
+  "name": "weathersphere",
+  "short_name": "weathersphere",
   "theme_color": "#2A629A",
   "background_color": "#fafafa",
   "display": "standalone",

@@ -20,6 +20,7 @@ export class AppComponent {
   isCelsius = false;
   isFahrenheit = false;
   isCurrentTab = false;
+  isSubscribed = Boolean(localStorage.getItem("subscribed"));
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +34,7 @@ export class AppComponent {
     let hour = 3600000;
     let ftnMinutes = 900000;
     this.subscription.push(
-      interval(5000).subscribe((x) => {
+      interval(hour).subscribe((x) => {
         if (x) {
           this.sendNotification();
         }
@@ -43,8 +44,7 @@ export class AppComponent {
 
   sendNotification() {
     let place = localStorage.getItem("place");
-    let subs = localStorage.getItem("subscribed");
-    if (place !== null && place !== "" && subs === "true") {
+    if (place !== null && place !== "" && this.isSubscribed) {
       this.apiService.getCurrent(place).subscribe((data: any) => {
         let weather = data.current.condition;
         let location = data.location.name + ", " + data.location.region;
@@ -68,20 +68,22 @@ export class AppComponent {
     }
   }
 
-  subscribeForNotification() {
+  onSubscribe() {
     let place = this.placeForm.get("city")?.value;
     if (place != null && place != "") {
       localStorage.setItem("place", place);
       localStorage.setItem("subscribed", "true");
       this.placeForm.get("city")?.setValue(null);
-      this.toast.success("You have subscribed to weather updates 👍");
+      this.toast.success("You are now subscribed for hourly weather updates👍");
+      this.isSubscribed = true;
     } else this.toast.warning("You have not subscribe to weather updates");
   }
 
-  unsubscribeForNotification() {
+  onUnsubscribe() {
     console.info("unsubscribed");
+    this.isSubscribed = false;
     this.subscription.forEach((s) => s.unsubscribe());
-    localStorage.clear();
+    localStorage.removeItem("subscribed");
     this.toast.success("Unsubscribed Successfully 👍");
   }
 
@@ -161,6 +163,11 @@ export class AppComponent {
 
   onUnitChange() {
     this.isCelsius = !this.isCelsius;
+  }
+
+  back() {
+    this.location = null;
+    this.placeForm.get("city")?.setValue(null);
   }
 
   deferredPrompt: any;
